@@ -14,5 +14,8 @@ type Company struct {
 }
 
 type CompanyFilter struct {
-	CompanyName string `json:"company_name"`
+	CompanyName  string `json:"company_name"`
+	LegalForm    string `json:"legal_form"`
+	LegalAddress string `json:"legal_address"`
+	Status       string `json:"status"`
 }

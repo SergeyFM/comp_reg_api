@@ -46,7 +46,10 @@ func (h *Handler) Status(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) GetCompanies(w http.ResponseWriter, r *http.Request) {
 	filter := CompanyFilter{
-		CompanyName: r.URL.Query().Get("company_name"),
+		CompanyName:  r.URL.Query().Get("company_name"),
+		LegalForm:    r.URL.Query().Get("legal_form"),
+		LegalAddress: r.URL.Query().Get("legal_address"),
+		Status:       r.URL.Query().Get("status"),
 	}
 
 	result, err := h.service.FindCompanies(filter)

@@ -13,24 +13,55 @@ func NewCompanyService(storage CompanyStorage) *CompanyService {
 }
 
 func (s *CompanyService) FindCompanies(filter CompanyFilter) ([]Company, error) {
-	if strings.TrimSpace(filter.CompanyName) == "" {
-		return s.storage.GetAll(), nil
-	}
-
-	re, err := wildcardToRegexp(filter.CompanyName)
-	if err != nil {
-		return nil, err
-	}
-
 	result := make([]Company, 0)
 
 	for _, company := range s.storage.GetAll() {
-		if re.MatchString(company.CompanyName) {
+		match, err := matchesCompanyFilter(company, filter)
+		if err != nil {
+			return nil, err
+		}
+
+		if match {
 			result = append(result, company)
 		}
 	}
 
 	return result, nil
+}
+
+func matchesCompanyFilter(company Company, filter CompanyFilter) (bool, error) {
+	if !matchesTextFilter(company.CompanyName, filter.CompanyName) {
+		return false, nil
+	}
+
+	if !matchesTextFilter(company.LegalForm, filter.LegalForm) {
+		return false, nil
+	}
+
+	if !matchesTextFilter(company.LegalAddress, filter.LegalAddress) {
+		return false, nil
+	}
+
+	if !matchesTextFilter(company.Status, filter.Status) {
+		return false, nil
+	}
+
+	return true, nil
+}
+
+func matchesTextFilter(value string, pattern string) bool {
+	pattern = strings.TrimSpace(pattern)
+
+	if pattern == "" {
+		return true
+	}
+
+	re, err := wildcardToRegexp(pattern)
+	if err != nil {
+		return false
+	}
+
+	return re.MatchString(value)
 }
 
 func (s *CompanyService) Count() int {
