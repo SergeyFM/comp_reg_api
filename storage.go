@@ -1,49 +1,85 @@
 package main
 
+import (
+	"encoding/csv"
+	"fmt"
+	"os"
+	"strconv"
+)
+
 type CompanyStorage interface {
 	GetAll() []Company
 	Count() int
 }
 
-type MockCompanyStorage struct {
+type FileCompanyStorage struct {
 	companies []Company
 }
 
-func NewMockCompanyStorage() *MockCompanyStorage {
-	return &MockCompanyStorage{
-		companies: []Company{
-			{
-				ID:            1,
-				CompanyName:   "ООО Ромашка",
-				INN:           "7701234567",
-				KPP:           "770101001",
-				OGRN:          "1027700123456",
-				OKPO:          "12345678",
-				LegalForm:     "ООО",
-				LegalAddress:  "г. Москва, ул. Ленина, д. 1",
-				Status:        "Действующая",
-				InclusionDate: "2020-01-15",
-			},
-			{
-				ID:            2,
-				CompanyName:   "АО Северный Ветер",
-				INN:           "7812345678",
-				KPP:           "781201001",
-				OGRN:          "1047800123456",
-				OKPO:          "23456789",
-				LegalForm:     "АО",
-				LegalAddress:  "г. Санкт-Петербург, Невский пр-т, д. 10",
-				Status:        "Действующая",
-				InclusionDate: "2019-05-20",
-			},
-		},
+func NewFileCompanyStorage(filePath string) (*FileCompanyStorage, error) {
+	companies, err := loadCompaniesFromCSV(filePath)
+	if err != nil {
+		return nil, err
 	}
+
+	return &FileCompanyStorage{
+		companies: companies,
+	}, nil
 }
 
-func (s *MockCompanyStorage) GetAll() []Company {
+func (s *FileCompanyStorage) GetAll() []Company {
 	return s.companies
 }
 
-func (s *MockCompanyStorage) Count() int {
+func (s *FileCompanyStorage) Count() int {
 	return len(s.companies)
+}
+
+func loadCompaniesFromCSV(filePath string) ([]Company, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("cannot open companies file: %w", err)
+	}
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	reader.FieldsPerRecord = -1
+	reader.TrimLeadingSpace = true
+
+	rows, err := reader.ReadAll()
+	if err != nil {
+		return nil, fmt.Errorf("cannot read CSV file: %w", err)
+	}
+
+	if len(rows) < 2 {
+		return []Company{}, nil
+	}
+
+	var companies []Company
+
+	for i, row := range rows[1:] {
+		if len(row) < 10 {
+			return nil, fmt.Errorf("row %d has invalid column count", i+2)
+		}
+
+		id, err := strconv.Atoi(row[0])
+		if err != nil {
+			return nil, fmt.Errorf("row %d has invalid id: %w", i+2, err)
+		}
+
+		companies = append(companies, Company{
+			ID:            id,
+			CompanyName:   row[1],
+			INN:           row[2],
+			KPP:           row[3],
+			OGRN:          row[4],
+			OKPO:          row[5],
+			LegalForm:     row[6],
+			LegalAddress:  row[7],
+			Status:        row[8],
+			InclusionDate: row[9],
+		})
+	}
+
+	return companies, nil
 }
