@@ -1,0 +1,11 @@
+services:
+  comp-reg-api:
+    build:
+      context: ..
+      dockerfile: docker_compose/Dockerfile
+    container_name: comp-reg-api
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      COMPANIES_FILE: "data/companies.csv"
