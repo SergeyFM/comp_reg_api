@@ -26,7 +26,7 @@ Company Registry API — это лёгкий демонстрационный RE
 - Swagger UI
 - health/status endpoints
 - Docker Compose deployment
-- Kubernetes deployment package без registry
+- Kubernetes deployment
 
 ---
 
@@ -41,15 +41,11 @@ comp_reg_api/
   data/
 
   docker_compose/
-    Dockerfile
-    comp-reg-api.yaml
 
   k8s-comp-reg-api/
-    deployment.yaml
-    service.yaml
-    build-image-tar.bat
-    test-image.bat
-    README_DEPLOY.md
+
+  helm-comp-reg-api/
+  
 ```
 
 ---
@@ -88,26 +84,9 @@ docker compose -f comp-reg-api.yaml down
 
 # Kubernetes Deployment
 
-The `k8s-comp-reg-api` folder contains a complete no-registry deployment package.
+The `k8s-comp-reg-api` folder contains a complete no-registry deployment package - not tested.
 
-Build image TAR:
-
-```powershell
-.\build-image-tar.bat
-```
-
-Test image locally:
-
-```powershell
-.\test-image.bat
-```
-
-Deploy in Kubernetes:
-
-```bash
-kubectl apply -f deployment.yaml
-kubectl apply -f service.yaml
-```
+The `helm-comp-reg-api` has helm chart, uses image registry - tested.
 
 ---
 

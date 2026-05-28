@@ -1,6 +1,6 @@
 apiVersion: v2
-name: comp-reg-api
+appVersion: 0.1.0
 description: Company Registry API demo service
+name: comp-reg-api
 type: application
 version: 0.1.0
-appVersion: "0.1.0"

@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: comp-reg-api
+  repository: registry.octapi-light.ru:5050/ip/test-apps/comp-reg-api
   tag: "0.1.0"
   pullPolicy: IfNotPresent
 
@@ -15,9 +15,8 @@ env:
   COMPANIES_FILE: "data/companies.csv"
 
 ingress:
-  enabled: false
-  className: ""
-  host: comp-reg-api.local
+  enabled: true
+  host: comp-reg-api.octapi-light.ru
   path: /
   pathType: Prefix
   tls:
