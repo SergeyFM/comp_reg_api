@@ -13,6 +13,8 @@ WORKDIR /app
 
 COPY --from=build /src/comp-reg-api .
 COPY data ./data
+COPY openapi.yaml .
+COPY swagger-ui ./swagger-ui
 
 ENV PORT=8080
 ENV COMPANIES_FILE=data/companies.csv

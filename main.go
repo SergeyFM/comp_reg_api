@@ -20,6 +20,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	handler.RegisterRoutes(mux)
+	RegisterSwaggerRoutes(mux)
 
 	addr := ":" + port
 

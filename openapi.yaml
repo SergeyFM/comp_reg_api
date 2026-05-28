@@ -1,0 +1,64 @@
+openapi: 3.0.3
+info:
+  title: Company Registry API
+  version: 0.1.0
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+  /status:
+    get:
+      summary: Service status
+      responses:
+        "200":
+          description: Service status
+  /api/v1/companies:
+    get:
+      summary: Search companies
+      parameters:
+        - name: company_name
+          in: query
+          schema:
+            type: string
+          example: "*Центр*"
+        - name: legal_form
+          in: query
+          schema:
+            type: string
+          example: "ООО"
+        - name: legal_address
+          in: query
+          schema:
+            type: string
+          example: "*Москва*"
+        - name: status
+          in: query
+          schema:
+            type: string
+          example: "Активен"
+      responses:
+        "200":
+          description: Companies array
+  /api/v1/companies/search:
+    post:
+      summary: Search companies by JSON filter
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                company_name:
+                  type: string
+                legal_form:
+                  type: string
+                legal_address:
+                  type: string
+                status:
+                  type: string
+      responses:
+        "200":
+          description: Companies array
