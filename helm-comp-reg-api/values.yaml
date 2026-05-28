@@ -1,0 +1,43 @@
+replicaCount: 1
+
+image:
+  repository: comp-reg-api
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+env:
+  PORT: "8080"
+  COMPANIES_FILE: "data/companies.csv"
+
+ingress:
+  enabled: false
+  className: ""
+  host: comp-reg-api.local
+  path: /
+  pathType: Prefix
+  tls:
+    enabled: false
+    secretName: ""
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+probes:
+  readiness:
+    path: /health
+    initialDelaySeconds: 3
+    periodSeconds: 10
+  liveness:
+    path: /health
+    initialDelaySeconds: 10
+    periodSeconds: 20
